@@ -4,7 +4,6 @@ class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _FirstScreenState createState() => _FirstScreenState();
 }
 
@@ -21,6 +20,8 @@ class _FirstScreenState extends State<FirstScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userSingleton = UserSingleton();
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -33,12 +34,11 @@ class _FirstScreenState extends State<FirstScreen> {
           listener: (context, state) {
             if (state is PalindromeResult) {
               final String message =
-                  state.isPalindrome ? 'is Palindrome' : 'is Not Palindrome';
+                  state.isPalindrome ? 'isPalindrome' : 'not Palindrome';
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: const Text('Palindrome Result'),
-                  content: Text('The entered text $message'),
+                  title: Text(message),
                   actions: [
                     TextButton(
                       onPressed: () {
@@ -57,6 +57,8 @@ class _FirstScreenState extends State<FirstScreen> {
           },
           child: Center(
             child: SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              primary: false,
               padding: const EdgeInsets.all(16.0),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -66,7 +68,7 @@ class _FirstScreenState extends State<FirstScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 60.0),
+                      const SizedBox(height: 30.0),
                       CircleAvatar(
                         radius: 40,
                         backgroundColor: Colors.white.withOpacity(0.3),
@@ -77,101 +79,43 @@ class _FirstScreenState extends State<FirstScreen> {
                         ),
                       ),
                       const SizedBox(height: 40.0),
-                      TextField(
+                      CustomTextField(
                         controller: nameEditingController,
-                        decoration: InputDecoration(
-                          hintText: 'Name',
-                          filled: true,
-                          fillColor: Colors.white.withOpacity(0.8),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 16),
-                        ),
+                        hintText: 'Name',
                       ),
                       const SizedBox(height: 16.0),
-                      TextField(
+                      CustomTextField(
                         controller: textEditingController,
-                        decoration: InputDecoration(
-                          hintText: 'Palindrome',
-                          filled: true,
-                          fillColor: Colors.white.withOpacity(0.8),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 16),
-                        ),
+                        hintText: 'Palindrome',
                       ),
                       const SizedBox(height: 30.0),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            final String text = textEditingController.text;
-                            if (text.isNotEmpty) {
-                              context
-                                  .read<PalindromeBloc>()
-                                  .add(CheckPalindrome(text));
-                            } else {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                content: Text('Please enter a text.'),
-                              ));
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color.fromARGB(43, 99, 123, 1),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 40, vertical: 16),
-                          ),
-                          child: const Text(
-                            'CHECK',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
+                      CustomButton(
+                        text: 'CHECK',
+                        onPressed: () {
+                          final String text = textEditingController.text;
+                          if (text.isNotEmpty) {
+                            context.read<PalindromeBloc>().add(CheckPalindrome(text));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text('Please enter a text.'),
+                            ));
+                          }
+                        },
                       ),
                       const SizedBox(height: 16.0),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            final String name = nameEditingController.text;
-                            if (name.isNotEmpty) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        SecondScreen(userName: name)),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                content: Text('Please enter your name.'),
-                              ));
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color.fromARGB(43, 99, 123, 1),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 40, vertical: 16),
-                          ),
-                          child: const Text(
-                            'NEXT',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
+                      CustomButton(
+                        text: 'NEXT',
+                        onPressed: () {
+                          final String name = nameEditingController.text;
+                          if (name.isNotEmpty) {
+                            userSingleton.userName = name;
+                            Navigator.pushNamed(context, Routes.secondScreen);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text('Please enter your name.'),
+                            ));
+                          }
+                        },
                       ),
                       const SizedBox(height: 60.0),
                     ],

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:suitmedia_mobile_test_app/src/blocs/bloc.dart';
-import 'package:suitmedia_mobile_test_app/src/presentations/screens/screen.dart';
+import 'package:suitmedia_mobile_test_app/src/navigation/navigation.dart';
 import 'package:suitmedia_mobile_test_app/src/repositories/repository.dart';
 import 'package:suitmedia_mobile_test_app/src/services/service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -25,12 +25,13 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     final ApiService apiService = ApiService();
-    final UserRepository userRepository = UserRepository(apiService: apiService);
+    final UserRepository userRepository =
+        UserRepository(apiService: apiService);
     final PalindromeRepository palindromeRepository = PalindromeRepository();
     final UserBloc userBloc = UserBloc(userRepository: userRepository);
-    final PalindromeBloc palindromeBloc = PalindromeBloc(palindromeRepository: palindromeRepository);
+    final PalindromeBloc palindromeBloc =
+        PalindromeBloc(palindromeRepository: palindromeRepository);
 
     return MultiBlocProvider(
       providers: [
@@ -40,7 +41,8 @@ class MainApp extends StatelessWidget {
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Suitmedia',
-        home: FirstScreen()
+        initialRoute: Routes.firstScreen,
+        onGenerateRoute: Routes.generateRoute,
       ),
     );
   }

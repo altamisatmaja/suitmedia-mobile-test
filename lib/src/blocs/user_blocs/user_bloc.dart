@@ -22,7 +22,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       } else {
         _users!.addAll(users);
       }
-      _hasMore = users.isNotEmpty; // Update _hasMore based on whether there are more users
+      _hasMore = users.isNotEmpty;
       emit(UserLoaded(users: _users!, hasMore: _hasMore));
     } catch (e) {
       emit(UserError(error: e.toString()));

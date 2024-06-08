@@ -12,13 +12,13 @@ class _ThirdScreenState extends State<ThirdScreen> {
   final ScrollController _scrollController = ScrollController();
   late UserBloc _userBloc;
   bool _isLoading = false;
+  final userSingleton = UserSingleton();
 
   @override
   void initState() {
     super.initState();
     _userBloc = context.read<UserBloc>();
     _userBloc.add(const FetchUsers(page: 1, perPage: 10));
-
     _scrollController.addListener(_onScroll);
   }
 
@@ -44,34 +44,26 @@ class _ThirdScreenState extends State<ThirdScreen> {
     _userBloc.add(const FetchUsers(page: 1, perPage: 10));
   }
 
-  Widget _buildLoadingList() {
-    return Shimmer.fromColors(
-                              baseColor: Colors.grey[300]!,
-                              highlightColor: Colors.grey[100]!,
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: Colors.grey[300],
-                                ),
-                                title: Container(
-                                  width: double.infinity,
-                                  height: 10.0,
-                                  color: Colors.grey[300],
-                                ),
-                                subtitle: Container(
-                                  width: double.infinity,
-                                  height: 10.0,
-                                  color: Colors.grey[300],
-                                ),
-                              ),
-                            );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Third Screen'),
         centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1.0),
+          child: Divider(
+            color: Colors.black,
+            thickness: 1.0,
+          ),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF554AF0)),
+          onPressed: () => Navigator.pushNamed(context, Routes.secondScreen),
+        ),
       ),
       body: BlocListener<UserBloc, UserState>(
         listener: (context, state) {
@@ -85,7 +77,12 @@ class _ThirdScreenState extends State<ThirdScreen> {
           builder: (context, stateUser) {
             if (stateUser is UserInitial ||
                 stateUser is UserLoading && _userBloc.currentPage == 1) {
-              return const Center(child: CircularProgressIndicator());
+              return ListView.builder(
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return const LoadingListTile();
+                },
+              );
             } else if (stateUser is UserLoaded) {
               _isLoading = false;
               return RefreshIndicator(
@@ -100,48 +97,18 @@ class _ThirdScreenState extends State<ThirdScreen> {
                         itemBuilder: (context, index) {
                           if (index < stateUser.users.length) {
                             final user = stateUser.users[index];
-                            return ListTile(
-                              leading: CircleAvatar(
-                                backgroundImage: NetworkImage(user.avatar!),
-                              ),
-                              title: Text('${user.firstName} ${user.lastName}'),
-                              subtitle: Text(user.email!),
-                              onTap: () {
-                                final selectedUserName =
-                                    '${user.firstName} ${user.lastName}';
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SecondScreen(
-                                        userName: selectedUserName),
-                                  ),
-                                );
-                              },
-                            );
+                            return UserListTile(user: user);
                           } else {
-                            _buildLoadingList;
+                            return const LoadingListTile();
                           }
                         },
                       ),
               );
             } else if (stateUser is UserError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Error: ${stateUser.error}'),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        _userBloc.add(const FetchUsers(page: 1, perPage: 10));
-                      },
-                      child: const Text('Refresh'),
-                    ),
-                  ],
-                ),
-              );
+              return ErrorWidgetState(
+                  error: stateUser.error, userBloc: _userBloc);
             } else {
-              return const Center(child: Text('No data'));
+              return Container();
             }
           },
         ),
