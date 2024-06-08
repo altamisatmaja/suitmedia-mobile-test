@@ -1,10 +1,18 @@
 part of '../bloc.dart';
 
-abstract class UserEvent {}
+abstract class UserEvent extends Equatable {
+  const UserEvent();
+
+  @override
+  List<Object> get props => [];
+}
 
 class FetchUsers extends UserEvent {
   final int page;
   final int perPage;
 
-  FetchUsers({required this.page, required this.perPage});
+  const FetchUsers({required this.page, required this.perPage});
+
+  @override
+  List<Object> get props => [page, perPage];
 }

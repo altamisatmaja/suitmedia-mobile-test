@@ -13,7 +13,9 @@ class PalindromeBloc extends Bloc<PalindromeEvent, PalindromeState> {
       if (kDebugMode) {
         print(isPalindrome);
       }
+      emit(PalindromeInitial());
       emit(PalindromeResult(isPalindrome));
+
     } catch (e) {
       emit(PalindromeError(error: e.toString()));
     }
