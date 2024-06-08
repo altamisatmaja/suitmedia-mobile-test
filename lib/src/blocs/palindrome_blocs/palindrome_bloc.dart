@@ -7,12 +7,15 @@ class PalindromeBloc extends Bloc<PalindromeEvent, PalindromeState> {
     on<CheckPalindrome>(_onCheckPalindrome);
   }
 
-  Stream<PalindromeState> _onCheckPalindrome(CheckPalindrome event, Emitter<PalindromeState> emit) async* {
+  Future<void> _onCheckPalindrome(CheckPalindrome event, Emitter<PalindromeState> emit) async {
     try {
-      final bool isPalindrome = await palindromeRepository.isPalindrome(event.text);
-      yield PalindromeResult(isPalindrome);
+      final bool isPalindrome = palindromeRepository.isPalindrome(event.text);
+      if (kDebugMode) {
+        print(isPalindrome);
+      }
+      emit(PalindromeResult(isPalindrome));
     } catch (e) {
-      yield PalindromeError(error: e.toString());
+      emit(PalindromeError(error: e.toString()));
     }
   }
 }

@@ -1,8 +1,17 @@
 part of 'repository.dart';
 
 class PalindromeRepository {
-  Future<bool> isPalindrome(String text) async {
+  bool isPalindrome(String text) {
     String cleanText = text.replaceAll(" ", "").toLowerCase();
-    return cleanText == cleanText.split('').reversed.join('');
+    int left = 0;
+    int right = cleanText.length - 1;
+    while (left < right) {
+      if (cleanText[left] != cleanText[right]) {
+        return false;
+      }
+      left++;
+      right--;
+    }
+    return true;
   }
 }

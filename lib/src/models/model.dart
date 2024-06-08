@@ -7,10 +7,10 @@ part 'model.g.dart';
 class User with _$User {
   factory User({
     required int id,
-    required String email,
-    required String firstName,
-    required String lastName,
-    required String avatar,
+    String? email,
+    @JsonKey(name: 'first_name') String? firstName,
+    @JsonKey(name: 'last_name') String? lastName,
+    String? avatar,
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
