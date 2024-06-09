@@ -49,68 +49,71 @@ class _ThirdScreenState extends State<ThirdScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Third Screen'),
+        title: Text(
+          'Third Screen',
+          style: Config.textStyleHeadlineSmall,
+        ),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(1.0),
-          child: Divider(
-            color: Colors.black,
-            thickness: 1.0,
-          ),
+          child: CustomerDivider(),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF554AF0)),
-          onPressed: () => Navigator.pushNamed(context, Routes.secondScreen),
+          icon: const Icon(Icons.arrow_back_ios, color: Config.backColor),
+          onPressed: () => navigateAndRemoveUntil(context, Routes.secondScreen),
         ),
       ),
-      body: BlocListener<UserBloc, UserState>(
-        listener: (context, state) {
-          if (state is UserError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error: ${state.error}')),
-            );
-          }
-        },
-        child: BlocBuilder<UserBloc, UserState>(
-          builder: (context, stateUser) {
-            if (stateUser is UserInitial ||
-                stateUser is UserLoading && _userBloc.currentPage == 1) {
-              return ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return const LoadingListTile();
-                },
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: BlocListener<UserBloc, UserState>(
+          listener: (context, state) {
+            if (state is UserError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Error: ${state.error}')),
               );
-            } else if (stateUser is UserLoaded) {
-              _isLoading = false;
-              return RefreshIndicator(
-                onRefresh: _onRefresh,
-                child: stateUser.users.isEmpty
-                    ? const Center(child: Text('No data'))
-                    : ListView.builder(
-                        controller: _scrollController,
-                        itemCount: stateUser.hasMore
-                            ? stateUser.users.length + 1
-                            : stateUser.users.length,
-                        itemBuilder: (context, index) {
-                          if (index < stateUser.users.length) {
-                            final user = stateUser.users[index];
-                            return UserListTile(user: user);
-                          } else {
-                            return const LoadingListTile();
-                          }
-                        },
-                      ),
-              );
-            } else if (stateUser is UserError) {
-              return ErrorWidgetState(
-                  error: stateUser.error, userBloc: _userBloc);
-            } else {
-              return Container();
             }
           },
+          child: BlocBuilder<UserBloc, UserState>(
+            builder: (context, stateUser) {
+              if (stateUser is UserInitial ||
+                  stateUser is UserLoading && _userBloc.currentPage == 1) {
+                return ListView.builder(
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return const LoadingListTile();
+                  },
+                );
+              } else if (stateUser is UserLoaded) {
+                _isLoading = false;
+                return RefreshIndicator(
+                  onRefresh: _onRefresh,
+                  child: stateUser.users.isEmpty
+                      ? const Center(child: Text('No data'))
+                      : ListView.builder(
+                          controller: _scrollController,
+                          itemCount: stateUser.hasMore
+                              ? stateUser.users.length + 1
+                              : stateUser.users.length,
+                          itemBuilder: (context, index) {
+                            if (index < stateUser.users.length) {
+                              final user = stateUser.users[index];
+                              return UserListTile(user: user);
+                            } else {
+                              return const LoadingListTile();
+                            }
+                          },
+                        ),
+                );
+              } else if (stateUser is UserError) {
+                return ErrorWidgetState(
+                    error: stateUser.error, userBloc: _userBloc);
+              } else {
+                return Container();
+              }
+            },
+          ),
         ),
       ),
     );

@@ -11,7 +11,11 @@ class CheckPalindrome extends PalindromeEvent {
   final String text;
 
   const CheckPalindrome(this.text);
-
-  @override
-  List<Object> get props => [text];
 }
+
+class ClearEvent extends PalindromeEvent {
+  
+  @override
+  List<Object> get props => [];
+}
+

@@ -9,17 +9,21 @@ class SecondScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final userSingleton = UserSingleton();
 
-    String displayName = userSingleton.userName ?? 'Guest';
+    String displayName = userSingleton.userName!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Second Screen'),
+        title: Text('Second Screen', style: Config.textStyleHeadlineSmall),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF554AF0)),
-          onPressed: () => Navigator.pushNamed(context, Routes.firstScreen),
+          icon: const Icon(Icons.arrow_back_ios, color: Config.backColor),
+          onPressed: () => navigateAndRemoveUntil(context, Routes.firstScreen),
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1.0),
+          child: CustomerDivider(),
         ),
       ),
       // ignore: avoid_unnecessary_containers
@@ -30,38 +34,27 @@ class SecondScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Welcome',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
+                style: Config.textStyleBodyMedium.copyWith(color: Config.fontColor, fontSize: 12.0)
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 10.0),
               Text(
                 displayName,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+                style: Config.textStyleHeadlineSmall
               ),
               const Spacer(),
               Center(
                 child: Text(
                   'Selected $displayName',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+                  style: Config.textStyleHeadlineMedium,
                 ),
               ),
               const Spacer(),
               CustomButton(
                 text: 'Choose a User',
                 onPressed: () {
-                  Navigator.pushNamed(context, Routes.thirdScreen);
+                  navigateAndRemoveUntil(context, Routes.thirdScreen);
                 },
               ),
             ],

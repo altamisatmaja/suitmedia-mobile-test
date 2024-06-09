@@ -8,19 +8,37 @@ class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case firstScreen:
-        return MaterialPageRoute(builder: (_) => const FirstScreen());
+        return MaterialPageRoute(
+          builder: (_) => const FirstScreen(),
+          settings: settings,
+        );
       case secondScreen:
-        return MaterialPageRoute(builder: (_) => const SecondScreen());
+        return MaterialPageRoute(
+          builder: (_) => const SecondScreen(),
+          settings: settings,
+        );
       case thirdScreen:
-        return MaterialPageRoute(builder: (_) => const ThirdScreen());
+        return MaterialPageRoute(
+          builder: (_) => const ThirdScreen(),
+          settings: settings,
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
             body: Center(
-              child: Text('No route defined for ${settings.name}'),
+              child: Text('No route defined ${settings.name}'),
             ),
           ),
+          settings: settings,
         );
     }
   }
+}
+
+void navigateAndRemoveUntil(BuildContext context, String newRouteName) {
+  Navigator.pushNamedAndRemoveUntil(
+    context,
+    newRouteName,
+    (Route<dynamic> route) => false,
+  );
 }

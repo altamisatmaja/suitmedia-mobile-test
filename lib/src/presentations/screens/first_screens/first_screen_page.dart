@@ -4,6 +4,7 @@ class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _FirstScreenState createState() => _FirstScreenState();
 }
 
@@ -44,7 +45,7 @@ class _FirstScreenState extends State<FirstScreen> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: const Text('OK'),
+                      child: const Text('Ok'),
                     ),
                   ],
                 ),
@@ -69,14 +70,10 @@ class _FirstScreenState extends State<FirstScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(height: 30.0),
-                      CircleAvatar(
-                        radius: 40,
-                        backgroundColor: Colors.white.withOpacity(0.3),
-                        child: const Icon(
-                          Icons.person_add,
-                          size: 40,
-                          color: Colors.white,
-                        ),
+                      Image.asset(
+                        'assets/images/photo.png',
+                        width: 116,
+                        height: 116,
                       ),
                       const SizedBox(height: 40.0),
                       CustomTextField(
@@ -90,13 +87,17 @@ class _FirstScreenState extends State<FirstScreen> {
                       ),
                       const SizedBox(height: 30.0),
                       CustomButton(
-                        text: 'CHECK',
+                        text: 'Check'.toUpperCase(),
                         onPressed: () {
                           final String text = textEditingController.text;
                           if (text.isNotEmpty) {
-                            context.read<PalindromeBloc>().add(CheckPalindrome(text));
+                            context
+                                .read<PalindromeBloc>()
+                                .add(CheckPalindrome(text));
+                            textEditingController.clear();
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
                               content: Text('Please enter a text.'),
                             ));
                           }
@@ -104,14 +105,16 @@ class _FirstScreenState extends State<FirstScreen> {
                       ),
                       const SizedBox(height: 16.0),
                       CustomButton(
-                        text: 'NEXT',
+                        text: 'Next'.toUpperCase(),
                         onPressed: () {
                           final String name = nameEditingController.text;
                           if (name.isNotEmpty) {
                             userSingleton.userName = name;
-                            Navigator.pushNamed(context, Routes.secondScreen);
+                            navigateAndRemoveUntil(
+                                context, Routes.secondScreen);
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
                               content: Text('Please enter your name.'),
                             ));
                           }
