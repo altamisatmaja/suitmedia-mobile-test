@@ -2,14 +2,16 @@ part of '../screen.dart';
 
 class SecondScreen extends StatelessWidget {
   final String? userName;
+  final String? userTemp;
 
-  const SecondScreen({super.key, this.userName});
+  const SecondScreen({super.key, this.userName, this.userTemp});
 
   @override
   Widget build(BuildContext context) {
     final userSingleton = UserSingleton();
 
-    String displayName = userSingleton.userName!;
+    String displayName = userSingleton.userName ?? '';
+    String displayTempName = userTemp ?? '';
 
     return Scaffold(
       appBar: AppBar(
@@ -40,13 +42,13 @@ class SecondScreen extends StatelessWidget {
               ),
               const SizedBox(height: 10.0),
               Text(
-                displayName,
+                displayName.isEmpty ? displayTempName : displayName,
                 style: Config.textStyleHeadlineSmall
               ),
               const Spacer(),
               Center(
                 child: Text(
-                  'Selected $displayName',
+                  'Selected ${displayName.isEmpty ? 'User Name' : displayName}',
                   style: Config.textStyleHeadlineMedium,
                 ),
               ),

@@ -21,7 +21,7 @@ class _FirstScreenState extends State<FirstScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userSingleton = UserSingleton();
+    // final userSingleton = UserSingleton();
 
     return Scaffold(
       body: Container(
@@ -109,9 +109,8 @@ class _FirstScreenState extends State<FirstScreen> {
                         onPressed: () {
                           final String name = nameEditingController.text;
                           if (name.isNotEmpty) {
-                            userSingleton.userName = name;
-                            navigateAndRemoveUntil(
-                                context, Routes.secondScreen);
+                            // userSingleton.userName = name;
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => SecondScreen(userTemp: name,)));
                           } else {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(
